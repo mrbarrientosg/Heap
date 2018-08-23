@@ -52,21 +52,21 @@ struct Heap {
  @param i Posicion en que parte el ordenamiento del arreglo.
  */
 static void heapify(Heap * heap, long i) {
-    long largest = i;
+    long smallest = i;
     
-    if (LEFT(i) < heap->count && heap->compare(heap->heapArray[LEFT(i)], heap->heapArray[i]) > 0) {
-        largest = LEFT(i);
+    if (LEFT(i) < heap->count && heap->compare(heap->heapArray[LEFT(i)], heap->heapArray[i]) < 0) {
+        smallest = LEFT(i);
     }
     
-    if (RIGHT(i) < heap->count && heap->compare(heap->heapArray[RIGHT(i)], heap->heapArray[largest]) > 0) {
-        largest = RIGHT(i);
+    if (RIGHT(i) < heap->count && heap->compare(heap->heapArray[RIGHT(i)], heap->heapArray[smallest]) < 0) {
+        smallest = RIGHT(i);
     }
     
-    if (largest != i) {
+    if (smallest != i) {
         const void * tmp = heap->heapArray[i];
-        heap->heapArray[i] = heap->heapArray[largest];
-        heap->heapArray[largest] = tmp;
-        heapify(heap, largest);
+        heap->heapArray[i] = heap->heapArray[smallest];
+        heap->heapArray[smallest] = tmp;
+        heapify(heap, smallest);
     }
 }
 
@@ -95,7 +95,7 @@ void pushHeap(Heap * heap, const void * data) {
     
     long i = heap->count;
     
-    while (i > 0 && heap->compare(data, heap->heapArray[PARENT(i)]) > 0) {
+    while (i > 0 && heap->compare(data, heap->heapArray[PARENT(i)]) < 0) {
         heap->heapArray[i] = heap->heapArray[PARENT(i)];
         i = PARENT(i);
     }

@@ -29,13 +29,13 @@
 int cmpMax(const void * p1, const void * p2) {
     const int * a = p1;
     const int * b = p2;
-    return *a - *b;
+    return *b - *a;
 }
 
 int cmpMin(const void * p1, const void * p2) {
     const int * a = p1;
     const int * b = p2;
-    return *b - *a;
+    return *a - *b;
 }
 
 

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D429F120212A5A4200651357 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = D429F11F212A5A4200651357 /* main.c */; };
-		D429F128212A5A4B00651357 /* Heap.c in Sources */ = {isa = PBXBuildFile; fileRef = D429F126212A5A4B00651357 /* Heap.c */; };
+		D4D7849A21F68DD2003B9FEA /* heap.c in Sources */ = {isa = PBXBuildFile; fileRef = D4D7849921F68DD2003B9FEA /* heap.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,8 +26,8 @@
 /* Begin PBXFileReference section */
 		D429F11C212A5A4200651357 /* Heap */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Heap; sourceTree = BUILT_PRODUCTS_DIR; };
 		D429F11F212A5A4200651357 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		D429F126212A5A4B00651357 /* Heap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Heap.c; sourceTree = "<group>"; };
-		D429F127212A5A4B00651357 /* Heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Heap.h; sourceTree = "<group>"; };
+		D4D7849821F68DD2003B9FEA /* heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = heap.h; sourceTree = "<group>"; };
+		D4D7849921F68DD2003B9FEA /* heap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = heap.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,8 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				D429F11F212A5A4200651357 /* main.c */,
-				D429F127212A5A4B00651357 /* Heap.h */,
-				D429F126212A5A4B00651357 /* Heap.c */,
+				D4D7849921F68DD2003B9FEA /* heap.c */,
+				D4D7849821F68DD2003B9FEA /* heap.h */,
 			);
 			path = Heap;
 			sourceTree = "<group>";
@@ -124,7 +124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D429F120212A5A4200651357 /* main.c in Sources */,
-				D429F128212A5A4B00651357 /* Heap.c in Sources */,
+				D4D7849A21F68DD2003B9FEA /* heap.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

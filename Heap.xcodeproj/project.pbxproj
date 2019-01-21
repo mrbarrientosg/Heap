@@ -61,8 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				D429F11F212A5A4200651357 /* main.c */,
-				D429F126212A5A4B00651357 /* Heap.c */,
 				D429F127212A5A4B00651357 /* Heap.h */,
+				D429F126212A5A4B00651357 /* Heap.c */,
 			);
 			path = Heap;
 			sourceTree = "<group>";

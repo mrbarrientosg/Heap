@@ -23,7 +23,7 @@
  */
 
 
-#include "Heap.h"
+#include "heap.h"
 #include <stdlib.h>
 #include <assert.h>
 
@@ -31,9 +31,9 @@
 #define LEFT(i) 2 * i + 1
 #define RIGHT(i) 2 * i + 2
 
-struct Heap {
+struct heap {
     /*! Arreglo de punteros de datos tipo void */
-    const void ** heapArray;
+    const void **heapArray;
     
     /*! Cantidad de elementos no nulos */
     long count;
@@ -41,8 +41,10 @@ struct Heap {
     /*! Tamaño del arreglo */
     long size;
     
-    /*! Función comparar */
-    HeapCompareCallBack compare;
+    /*! Funcion comparar */
+    heap_compare_callback compare;
+    
+    heap_release_object_callback release;
 };
 
 /**
@@ -51,14 +53,15 @@ struct Heap {
  @param heap Puntero a la struct Heap.
  @param i Posicion en que parte el ordenamiento del arreglo.
  */
-static void heapify(Heap * heap, long i) {
+static void
+heapify (heap *heap, long i) {
     long smallest = i;
     
-    if (LEFT(i) < heap->count && heap->compare(heap->heapArray[LEFT(i)], heap->heapArray[i]) < 0) {
+    if (LEFT(i) < heap->count && heap->compare (heap->heapArray[LEFT(i)], heap->heapArray[i]) < 0) {
         smallest = LEFT(i);
     }
     
-    if (RIGHT(i) < heap->count && heap->compare(heap->heapArray[RIGHT(i)], heap->heapArray[smallest]) < 0) {
+    if (RIGHT(i) < heap->count && heap->compare (heap->heapArray[RIGHT(i)], heap->heapArray[smallest]) < 0) {
         smallest = RIGHT(i);
     }
     
@@ -70,47 +73,74 @@ static void heapify(Heap * heap, long i) {
     }
 }
 
-Heap * createHeap(HeapCompareCallBack compare, long size) {
-    Heap * new = (Heap *)malloc(sizeof(Heap));
+static void
+heap_growth (heap *heap) {
+    if (heap->count != heap->size)
+        return;
     
-    assert(new != NULL); // Se verifica que no sea null.
+    const void **new_heap;
+    heap->size = heap->size * 2 + 1;
+    new_heap = (const void **) realloc (heap->heapArray, heap->size * sizeof (const void *));
     
-    new->heapArray = (const void **)malloc(sizeof(const void *) * size);
-    new->size = size;
-    new->count = 0;
-    new->compare = compare;
+    assert (new_heap != NULL);
     
-    return new;
+    heap->heapArray = new_heap;
 }
 
-void pushHeap(Heap * heap, const void * data) {
-    assert(heap != NULL); // El heap no puede ser null.
-    assert(heap->heapArray != NULL); // El heapArray no puede ser null.
-    
-    if (heap->count == heap->size) {
-        heap->size = heap->size * 2 + 1;
-        heap->heapArray = (const void **)realloc(heap->heapArray, heap->size * sizeof(const void *));
-        assert(heap->heapArray != NULL); // No hay memoria para relocalizar el arreglo.
-    }
-    
+static long
+heap_find_index (heap *heap, const void *data) {
     long i = heap->count;
     
-    while (i > 0 && heap->compare(data, heap->heapArray[PARENT(i)]) < 0) {
+    while (i > 0 && heap->compare (data, heap->heapArray[PARENT(i)]) < 0) {
         heap->heapArray[i] = heap->heapArray[PARENT(i)];
         i = PARENT(i);
     }
     
-    heap->heapArray[i] = data;
+    return i;
+}
+
+heap *
+heap_init (long size, heap_compare_callback compare, heap_release_object_callback release) {
+    heap * new = (heap *) malloc (sizeof (heap));
+    
+    assert (new != NULL); // Se verifica que no sea null.
+    
+    new->heapArray = (const void **) malloc(sizeof (const void *) * size);
+    new->size = size;
+    new->count = 0;
+    new->compare = compare;
+    new->release = release;
+    
+    return new;
+}
+
+void
+heap_push (heap *heap, const void *data) {
+    assert (heap != NULL); // El heap no puede ser null.
+    assert (heap->heapArray != NULL); // El heapArray no puede ser null.
+    
+    heap_growth(heap);
+    
+    long idx = heap_find_index(heap, data);
+    
+    heap->heapArray[idx] = data;
     heap->count += 1;
 }
 
-void * popHeap(Heap * heap) {
-    assert(heap != NULL); // El heap no puede ser null.
-    assert(heap->heapArray != NULL); // El heapArray no puede ser null.
+void *
+heap_pop (heap *heap) {
+    assert (heap != NULL); // El heap no puede ser null.
+    assert (heap->heapArray != NULL); // El heapArray no puede ser null.
     
-    if (heap->count == 0) return NULL;
+    if (heap->count == 0)
+        return NULL;
     
-    void * data = (void *)heap->heapArray[0];
+    void * data = (void *) heap->heapArray[0];
+    
+    if (heap->release != NULL) {
+        heap->release (data);
+        data = NULL;
+    }
     
     heap->count -= 1;
     
@@ -121,29 +151,37 @@ void * popHeap(Heap * heap) {
     return data;
 }
 
-void * peekHeap(Heap * heap) {
-    assert(heap != NULL); // El heap no puede ser null.
-    assert(heap->heapArray != NULL); // El heapArray no puede ser null.
+void *
+heap_peek (heap *heap) {
+    assert (heap != NULL); // El heap no puede ser null.
+    assert (heap->heapArray != NULL); // El heapArray no puede ser null.
     
-    if (heap->count == 0) return NULL;
+    if (heap->count == 0)
+        return NULL;
     
-    return (void *)heap->heapArray[0];
+    return (void *) heap->heapArray[0];
 }
 
-long heapCount(Heap * heap) {
-    assert(heap != NULL); // El heap no puede ser null.
+long
+heap_size (heap *heap) {
+    assert (heap != NULL); // El heap no puede ser null.
     
-    if (heap->heapArray == NULL) return 0;
+    if (heap->heapArray == NULL)
+        return 0;
     
     return heap->count;
 }
 
-void removeAllHeap(Heap * heap) {
-    assert(heap != NULL); // El heap no puede ser null.
+void
+heap_release (heap **heap) {
+    assert (heap != NULL); // El heap no puede ser null.
+    assert ((*heap) != NULL);
     
-    if (heap->heapArray != NULL) {
-        free(heap->heapArray);
-        heap->heapArray = NULL;
-        heap->count = 0;
-    }
+    if ((*heap)->heapArray != NULL)
+        free ((*heap)->heapArray);
+    
+    (*heap)->heapArray = NULL;
+    (*heap)->count = 0;
+    free (*heap);
+    *heap = NULL;
 }

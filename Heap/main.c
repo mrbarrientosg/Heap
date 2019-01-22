@@ -24,7 +24,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Heap.h"
+#include "heap.h"
 
 int cmpMax(const void * p1, const void * p2) {
     const int * a = p1;
@@ -41,34 +41,34 @@ int cmpMin(const void * p1, const void * p2) {
 
 int main(int argc, const char * argv[]) {
     
-    Heap * maxHeap = createHeap(cmpMax, 12);
-    Heap * minHeap = createHeap(cmpMin, 12);
+    heap *maxHeap = heap_init (12, cmpMax, NULL);
+    heap *minHeap = heap_init (12, cmpMin, free);
     
-    int * data;
+    int *data;
     
     int i;
     
     for (i = 10; i >= 0; i--) {
-        data = (int *)malloc(sizeof(int));
+        data = (int *) malloc (sizeof (int));
         *data = i;
-        pushHeap(maxHeap, data);
-        pushHeap(minHeap, data);
+        heap_push (maxHeap, data);
+        heap_push (minHeap, data);
     }
     
-    while (peekHeap(maxHeap)) {
-        printf("%d\n", *(int *)peekHeap(maxHeap));
-        popHeap(maxHeap);
+    while (heap_peek (maxHeap)) {
+        printf ("%d\n", *(int *) heap_peek (maxHeap));
+        heap_pop (maxHeap);
     }
     
     printf("\n");
     
-    while (peekHeap(minHeap)) {
-        printf("%d\n", *(int *)peekHeap(minHeap));
-        popHeap(minHeap);
+    while (heap_peek (minHeap)) {
+        printf ("%d\n", *(int *) heap_peek (minHeap));
+        heap_pop (minHeap);
     }
     
-    removeAllHeap(maxHeap);
-    removeAllHeap(minHeap);
+    heap_release (&maxHeap);
+    heap_release (&minHeap);
     
     return 0;
 }

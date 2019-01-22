@@ -22,10 +22,10 @@
  SOFTWARE.
  */
 
-#ifndef Heap_h
-#define Heap_h
+#ifndef heap_h
+#define heap_h
 
-typedef struct Heap Heap;
+typedef struct heap heap;
 
 /**
  @typedef
@@ -38,7 +38,15 @@ typedef struct Heap Heap;
     0: p1 es igual a p2.
    -1: p1 es menor que p2.
  */
-typedef int (* HeapCompareCallBack)(const void * value1, const void * value2);
+typedef int (*heap_compare_callback)(const void *value1, const void *value2);
+
+/**
+ @typedef
+ Prototipo de funcion para eliminar de memoria el objeto que se guarda dentro del heap.
+ 
+ @param object Puntero al objecto guardado.
+ */
+typedef void (*heap_release_object_callback)(void *object);
 
 /**
  Crea un nuevo puntero de tipo Heap.
@@ -47,7 +55,7 @@ typedef int (* HeapCompareCallBack)(const void * value1, const void * value2);
  @param size El tamaño inicial del heap.
  @return Puntero al nuevo Heap creado.
  */
-Heap * createHeap(HeapCompareCallBack compare, long size);
+extern heap *heap_init (long size, heap_compare_callback compare, heap_release_object_callback release);
 
 /**
  Inserta un nuevo objecto dentro del heap, hace uso de la funcion comparar para poder insertar.
@@ -62,18 +70,21 @@ Heap * createHeap(HeapCompareCallBack compare, long size);
  @param heap Puntero al Heap.
  @param data Puntero a al dato que quiere ser insertado.
  */
-void pushHeap(Heap * heap, const void * data);
+extern void heap_push (heap *heap, const void *data);
 
 /**
  Elimina el elemento maximo o minimo del heap.
  Si la cantidad de datos en el Heap es 0, la funcion retorna NULL.
+ 
+ Si la funcion release esta activa, la funcion eliminara
+ el dato de la memoria y retornara NULL.
  
  Complejidad: O(log n)
 
  @param heap Puntero al Heap.
  @return Puntero al dato eliminado del Heap.
  */
-void * popHeap(Heap * heap);
+extern void *heap_pop (heap *heap);
 
 /**
  Retorna el elemento maximo o minimo del Heap.
@@ -84,7 +95,7 @@ void * popHeap(Heap * heap);
  @param heap Puntero al Heap.
  @return Puntero al dato eliminado del heap.
  */
-void * peekHeap(Heap * heap);
+extern void *heap_peek (heap *heap);
 
 /**
  Retorna la cantidad de elementos del Heap.
@@ -94,7 +105,7 @@ void * peekHeap(Heap * heap);
  @param heap Puntero al Heap.
  @return Cantidad de elementos del heap.
  */
-long heapCount(Heap * heap);
+extern long heap_size (heap *heap);
 
 /**
  Prueba si el Heap está vacía.
@@ -104,7 +115,7 @@ long heapCount(Heap * heap);
  @param heap Puntero al Heap.
  @return 1 (true) si y solo si el Heap no contiene elementos; 0 (false) lo contrario.
  */
-int emptyHeap(Heap * heap);
+extern int heap_empty (heap *heap);
 
 /**
  Elimina todo los elementos del Heap, pero no libera memoria de ellos.
@@ -113,6 +124,6 @@ int emptyHeap(Heap * heap);
 
  @param heap Puntero al Heap.
  */
-void removeAllHeap(Heap * heap);
+extern void heap_release (heap **heap);
 
-#endif /* Heap_h */
+#endif /* heap_h */

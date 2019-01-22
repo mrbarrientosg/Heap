@@ -119,9 +119,9 @@ heap_push (heap *heap, const void *data) {
     assert (heap != NULL); // El heap no puede ser null.
     assert (heap->heapArray != NULL); // El heapArray no puede ser null.
     
-    heap_growth(heap);
+    heap_growth (heap);
     
-    long idx = heap_find_index(heap, data);
+    long idx = heap_find_index( heap, data);
     
     heap->heapArray[idx] = data;
     heap->count += 1;
